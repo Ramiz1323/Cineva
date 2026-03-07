@@ -1,9 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import MovieDetails from "./pages/MovieDetails";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Favorites from "./pages/Favorites";
 
 function App() {
   return (
@@ -23,7 +25,11 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route
           path="/favorites"
-          element={<div className="pt-20 text-white">Favorites Page...</div>}
+          element={
+            <ProtectedRoute>
+              <Favorites />
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </Router>

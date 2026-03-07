@@ -19,6 +19,15 @@ const toggleFavorite = async (req, res) => {
     }
 };
 
+const getFavorites = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.user.id);
+        res.status(200).json({ favorites: user.favorites });
+    } catch (error) {
+        res.status(500).json({ message: "Error getting favorites", error: error.message });
+    }
+}
+
 const addToHistory = async (req, res) => {
     try {
         const { movieId, title, posterPath } = req.body;
@@ -41,5 +50,6 @@ const addToHistory = async (req, res) => {
 
 module.exports = {
     toggleFavorite,
-    addToHistory
+    addToHistory,
+    getFavorites
 }

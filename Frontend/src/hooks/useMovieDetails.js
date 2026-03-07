@@ -1,28 +1,24 @@
-import { useState, useEffect } from 'react';
-import { fetchMovieDetails } from '../services/tmdbService';
-import { useUser } from './useUser'; // Import our new hook
+import { useEffect, useState } from "react";
+import { getMovieDetails } from "../services/movieService";
 
 export const useMovieDetails = (id) => {
-    const [movie, setMovie] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const { saveToHistory } = useUser();
+  const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const getDetails = async () => {
-            const data = await fetchMovieDetails(id);
-            setMovie(data);
+  useEffect(() => {
+    const fetchMovie = async () => {
+      try {
+        const data = await getMovieDetails(id);
+        setMovie(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-            if (data) {
-                await saveToHistory({
-                    movieId: data.id,
-                    title: data.title,
-                    posterPath: data.poster_path,
-                });
-            }
-            setLoading(false);
-        };
-        if (id) getDetails();
-    }, [id]);
+    fetchMovie();
+  }, [id]);
 
-    return { movie, loading };
+  return { movie, loading };
 };

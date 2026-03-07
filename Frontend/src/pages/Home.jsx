@@ -10,10 +10,10 @@ const Home = () => {
 
   return (
     // Dynamic background and text colors
-    <div className="bg-white dark:bg-black text-slate-900 dark:text-white min-h-screen pt-16 transition-colors duration-300">
+    <div className=" bg-white dark:bg-black text-slate-900 dark:text-white min-h-screen pt-16 transition-colors duration-300">
       
       {/* HERO SECTION - Adaptive Gradients */}
-      <div className="relative h-[40vh] sm:h-[50vh] md:h-[60vh] flex items-center justify-center text-center px-4 bg-linear-to-b from-slate-100 to-white dark:from-black dark:via-zinc-900 dark:to-black">
+      <div className="relative h-[40vh] sm:h-[50vh] md:h-[60vh] flex items-center justify-center text-center px-4 bg-linear-to-b from-slate-100 to-white dark:from-black dark:via-zinc-900 dark:to-black ">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
