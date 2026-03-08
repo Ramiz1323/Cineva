@@ -1,4 +1,4 @@
-const { signup, login, logout } = require("../controllers/auth.controller");
+const { signup, login, logout, authCheck } = require("../controllers/auth.controller");
 const authRouter = require("express").Router();
 const { protect } = require("../middlewares/auth.middleware");
 
@@ -9,6 +9,9 @@ authRouter.post("/signup", signup);
 authRouter.post("/login", login);
 
 //POST - /api/auth/logout
-authRouter.post("/logout", protect, logout);
+authRouter.post("/logout", logout);
+
+//GET - /api/auth/authCheck
+authRouter.get("/authCheck", protect, authCheck);
 
 module.exports = authRouter;

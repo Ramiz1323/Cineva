@@ -27,12 +27,14 @@ const userSchema = new mongoose.Schema({
         movieId: String,
         title: String,
         posterPath: String,
+        voteAverage: Number,
         watchAt:{
             type:Date,
             default:Date.now
         }
     }],
-    role: {type: String, enum:['user', 'admin'], default: 'user'}
+    role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    isBanned: { type: Boolean, default: false }
 });
 
 const userModel = mongoose.model('User', userSchema);

@@ -1,7 +1,6 @@
 const userModel = require("../models/user.model.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const cookie = require("cookie-parser");
 
 const signup = async (req, res) => {
   try {
@@ -42,7 +41,13 @@ const login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1d" },
     );
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+    });
     res.status(200).json({
       token,
       user: { username: user.username, email: user.email, role: user.role },
@@ -54,10 +59,13 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    res.clearCookie("token", {
+    res.cookie("token", "", {
+      maxAge: 0,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
+      path: "/",
+      expires: new Date(0),
     });
 
     res.status(200).json({ message: "Logged out successfully" });
@@ -66,8 +74,21 @@ const logout = async (req, res) => {
   }
 };
 
+const authCheck = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    res.status(200).json({ success: true, user: { username: user.username, email: user.email, role: user.role } });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error in auth check", error: error.message });
+  }
+};
+
 module.exports = {
   signup,
   login,
   logout,
+  authCheck,
 };

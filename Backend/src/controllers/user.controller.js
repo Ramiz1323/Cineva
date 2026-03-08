@@ -5,11 +5,11 @@ const toggleFavorite = async (req, res) => {
         const { movieId } = req.body;
         const user = await userModel.findById(req.user.id);
 
-        const isFavorite = user.favorites.includes(movieId);
+        const isFavorite = user.favorites.some(id => String(id) === String(movieId));
         if (isFavorite) {
-            user.favorites = user.favorites.filter(id => id !== movieId);
+            user.favorites = user.favorites.filter(id => String(id) !== String(movieId));
         } else {
-            user.favorites.push(movieId);
+            user.favorites.push(String(movieId));
         }
 
         await user.save();
@@ -30,13 +30,18 @@ const getFavorites = async (req, res) => {
 
 const addToHistory = async (req, res) => {
     try {
-        const { movieId, title, posterPath } = req.body;
+        const { movieId, title, posterPath, voteAverage } = req.body;
         const user = await userModel.findById(req.user.id);
 
         // move it to the top if exists, otherwise add new entry
         user.watchHistory = user.watchHistory.filter(item => String(item.movieId) !== String(movieId));
         
-        user.watchHistory.unshift({ movieId, title, posterPath });
+        user.watchHistory.unshift({ 
+            movieId: String(movieId), 
+            title, 
+            posterPath,
+            voteAverage: voteAverage || 0
+        });
         
         // only last 20 items in history
         if (user.watchHistory.length > 20) user.watchHistory.pop();

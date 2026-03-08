@@ -17,12 +17,13 @@ const adminRoutes = require('./routes/admin.routes');
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
 const movieRouter = require('./routes/movie.routes');
-
+const tvRoutes = require('./routes/tv.routes');
 
 app.use('/api/admin', adminRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/movie', movieRouter);
+app.use('/api/tv', tvRoutes);
 
 
 module.exports = app;

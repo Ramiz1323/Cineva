@@ -20,3 +20,8 @@ export const logout = async () => {
 
   return res.data;
 };
+
+export const authCheck = async () => {
+  const res = await axiosClient.get("/auth/authCheck");
+  return res.data;
+};

@@ -1,32 +1,19 @@
-import { useEffect, useState } from "react";
-import { getTrendingMovies, getPopularMovies } from "../services/movieService";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTrending, fetchPopular } from "../redux/movieSlice";
+import { selectTrending, selectPopular, selectMoviesLoading } from "../redux/movieSlice";
 
 export const useMovieDiscovery = () => {
-  const [trending, setTrending] = useState([]);
-  const [popular, setPopular] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const trending = useSelector(selectTrending);
+  const popular = useSelector(selectPopular);
+  const loading = useSelector(selectMoviesLoading);
 
   useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        const trendingData = await getTrendingMovies();
-        const popularData = await getPopularMovies();
+    // thunks have built-in cache guard — won't re-fetch if data already in store
+    dispatch(fetchTrending());
+    dispatch(fetchPopular());
+  }, [dispatch]);
 
-        setTrending(trendingData.results);
-        setPopular(popularData.results);
-      } catch (error) {
-        console.error("Movie fetch error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMovies();
-  }, []);
-
-  return {
-    trending,
-    popular,
-    loading,
-  };
+  return { trending, popular, loading };
 };

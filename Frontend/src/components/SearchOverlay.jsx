@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { X, Search } from "lucide-react";
 import { useSearch } from "../hooks/useSearch";
 import { Link } from "react-router-dom";
+import SkeletonSearchRow from "./SkeletonSearchRow";
 
 const SearchOverlay = ({ open, onClose }) => {
 
@@ -10,33 +11,27 @@ const SearchOverlay = ({ open, onClose }) => {
   const { results, loading } = useSearch(query);
 
   useEffect(() => {
-
     const handleEsc = (e) => {
-
       if (e.key === "Escape") onClose();
-
     };
 
     window.addEventListener("keydown", handleEsc);
-
     return () => window.removeEventListener("keydown", handleEsc);
-
   }, [onClose]);
 
-  if (!open) return null;
   useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
 
-  if (open) {
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "auto";
-  }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [open]);
 
-  return () => {
-    document.body.style.overflow = "auto";
-  };
-
-}, [open]);
+  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-lg flex flex-col items-center pt-24">
@@ -68,9 +63,11 @@ const SearchOverlay = ({ open, onClose }) => {
       <div className="w-full max-w-4xl mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 px-6 overflow-y-auto flex-1 scroll-smooth">
 
         {loading && (
-          <p className="text-gray-400 col-span-full text-center">
-            Searching...
-          </p>
+          <>
+            {Array.from({ length: 8 }).map((_, i) => (
+              <SkeletonSearchRow key={`skel-search-${i}`} />
+            ))}
+          </>
         )}
 
         {!loading && results.length === 0 && query && (

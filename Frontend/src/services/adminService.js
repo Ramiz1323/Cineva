@@ -1,22 +1,38 @@
 import axiosClient from "../api/axiosClient";
 
-export const addMovie = async (movie) => {
-
-  const res = await axiosClient.post("/admin/add-movie", movie);
-
+// --- MOVIES ---
+export const adminGetMovies = async () => {
+  const res = await axiosClient.get("/admin/movies");
   return res.data;
 };
 
-export const getUsers = async () => {
+export const adminAddMovie = async (movieData) => {
+  const res = await axiosClient.post("/admin/movies", movieData);
+  return res.data;
+};
 
+export const adminUpdateMovie = async (id, movieData) => {
+  const res = await axiosClient.put(`/admin/movies/${id}`, movieData);
+  return res.data;
+};
+
+export const adminDeleteMovie = async (id) => {
+  const res = await axiosClient.delete(`/admin/movies/${id}`);
+  return res.data;
+};
+
+// --- USERS ---
+export const adminGetUsers = async () => {
   const res = await axiosClient.get("/admin/users");
-
   return res.data;
 };
 
-export const deleteMovie = async (id) => {
+export const adminBanUser = async (id) => {
+  const res = await axiosClient.put(`/admin/users/${id}/ban`);
+  return res.data;
+};
 
-  const res = await axiosClient.delete(`/admin/movie/${id}`);
-
+export const adminDeleteUser = async (id) => {
+  const res = await axiosClient.delete(`/admin/users/${id}`);
   return res.data;
 };
