@@ -19,23 +19,17 @@ const Navbar = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    const handler = (e) => {
+      if (e.key === "/") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
 
-  const handler = (e) => {
+    window.addEventListener("keydown", handler);
 
-    if (e.key === "/") {
-
-      e.preventDefault();
-      setSearchOpen(true);
-
-    }
-
-  };
-
-  window.addEventListener("keydown", handler);
-
-  return () => window.removeEventListener("keydown", handler);
-
-}, []);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -71,8 +65,6 @@ const Navbar = () => {
           CINEVA
         </Link>
 
-
-
         <div className="flex items-center gap-4 md:gap-6">
           <div className="hidden md:flex items-center gap-6 font-medium">
             <Link to="/movies" className="hover:text-red-500 transition">
@@ -82,17 +74,22 @@ const Navbar = () => {
             <Link to="/tv" className="hover:text-red-500 transition">
               TV Shows
             </Link>
+            {isAuthenticated && (
+              <Link to="/history" className="hover:text-red-500 transition">
+                History
+              </Link>
+            )}
           </div>
           <button
-  onClick={() => setSearchOpen(true)}
-  className="p-2 hover:bg-slate-100 dark:hover:bg-zinc-800 rounded-full"
->
-  <Search size={20} />
-</button>
-<SearchOverlay
-  open={searchOpen}
-  onClose={() => setSearchOpen(false)}
-/>
+            onClick={() => setSearchOpen(true)}
+            className="p-2 hover:bg-slate-100 dark:hover:bg-zinc-800 rounded-full"
+          >
+            <Search size={20} />
+          </button>
+          <SearchOverlay
+            open={searchOpen}
+            onClose={() => setSearchOpen(false)}
+          />
           <ThemeToggle />
 
           {isAuthenticated ? (

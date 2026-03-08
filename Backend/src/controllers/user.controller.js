@@ -34,7 +34,7 @@ const addToHistory = async (req, res) => {
         const user = await userModel.findById(req.user.id);
 
         // move it to the top if exists, otherwise add new entry
-        user.watchHistory = user.watchHistory.filter(item => item.movieId !== movieId);
+        user.watchHistory = user.watchHistory.filter(item => String(item.movieId) !== String(movieId));
         
         user.watchHistory.unshift({ movieId, title, posterPath });
         
@@ -48,8 +48,18 @@ const addToHistory = async (req, res) => {
     }
 };
 
+const getHistory = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.user.id);
+        res.status(200).json({ history: user.watchHistory });
+    } catch (error) {
+        res.status(500).json({ message: "Error getting history", error: error.message });
+    }
+};
+
 module.exports = {
     toggleFavorite,
     addToHistory,
-    getFavorites
+    getFavorites,
+    getHistory
 }

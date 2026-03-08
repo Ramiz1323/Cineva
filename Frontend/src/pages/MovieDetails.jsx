@@ -4,11 +4,15 @@ import { useMovieDetails } from "../hooks/useMovieDetails";
 import { addToHistory, toggleFavorite } from "../services/userService";
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addHistorySuccess } from "../redux/userSlice";
 
 const MovieDetails = () => {
+  const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const handleFavorite = async () => {
+    if (!movie) return;
+
     try {
       await toggleFavorite({
         movieId: movie.id,
@@ -26,14 +30,26 @@ const MovieDetails = () => {
 
   // Save watch history
   useEffect(() => {
-    if (movie) {
-      addToHistory({
-        movieId: movie.id,
-        title: movie.title,
-        posterPath: movie.poster_path,
-      }).catch(() => {});
-    }
-  }, [movie]);
+    if (!movie) return;
+
+    const saveHistory = async () => {
+      try {
+        const historyItem = {
+          movieId: movie.id,
+          title: movie.title,
+          posterPath: movie.poster_path,
+        };
+        await addToHistory(historyItem);
+        if (isAuthenticated) {
+          dispatch(addHistorySuccess(historyItem));
+        }
+      } catch (err) {
+        console.log("History save failed");
+      }
+    };
+
+    saveHistory();
+  }, [movie?.id, dispatch, isAuthenticated]);
 
   if (loading)
     return (
@@ -106,68 +122,60 @@ const MovieDetails = () => {
           {/* MOVIE INFO */}
           <div className="flex-1">
             <div className="relative bg-slate-50/80 dark:bg-zinc-900/60 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-slate-200 dark:border-zinc-800">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-zinc-800 pb-2">
+                <h2 className="text-2xl font-bold">Movie Overview</h2>
 
-  {/* Header */}
-  <div className="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-zinc-800 pb-2">
-    
-    <h2 className="text-2xl font-bold">
-      Movie Overview
-    </h2>
+                {/* Favorite Icon */}
+                {isAuthenticated && (
+                  <motion.button
+                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.15 }}
+                    onClick={handleFavorite}
+                    className="p-2 rounded-full bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white transition shadow-md"
+                  >
+                    <Heart size={20} fill="currentColor" />
+                  </motion.button>
+                )}
+              </div>
 
-    {/* Favorite Icon */}
-    {isAuthenticated && (
-      <motion.button
-        whileTap={{ scale: 0.9 }}
-        whileHover={{ scale: 1.15 }}
-        onClick={handleFavorite}
-        className="p-2 rounded-full bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white transition shadow-md"
-      >
-        <Heart size={20} />
-      </motion.button>
-    )}
+              {/* Overview */}
+              <p className="text-slate-700 dark:text-gray-300 leading-relaxed font-medium">
+                {movie.overview || "Description not available"}
+              </p>
 
-  </div>
+              {/* Movie Stats */}
+              <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+                <div className="flex flex-col">
+                  <span className="text-slate-500 dark:text-gray-500 font-bold uppercase tracking-wider mb-1">
+                    Rating
+                  </span>
+                  <span className="text-lg font-semibold">
+                    ⭐ {movie.vote_average?.toFixed(1) || "N/A"}
+                  </span>
+                </div>
 
-  {/* Overview */}
-  <p className="text-slate-700 dark:text-gray-300 leading-relaxed font-medium">
-    {movie.overview || "Description not available"}
-  </p>
+                <div className="flex flex-col">
+                  <span className="text-slate-500 dark:text-gray-500 font-bold uppercase tracking-wider mb-1">
+                    Release
+                  </span>
+                  <span className="text-lg font-semibold">
+                    {movie.release_date
+                      ? new Date(movie.release_date).getFullYear()
+                      : "N/A"}
+                  </span>
+                </div>
 
-  {/* Movie Stats */}
-  <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
-
-    <div className="flex flex-col">
-      <span className="text-slate-500 dark:text-gray-500 font-bold uppercase tracking-wider mb-1">
-        Rating
-      </span>
-      <span className="text-lg font-semibold">
-        ⭐ {movie.vote_average?.toFixed(1) || "N/A"}
-      </span>
-    </div>
-
-    <div className="flex flex-col">
-      <span className="text-slate-500 dark:text-gray-500 font-bold uppercase tracking-wider mb-1">
-        Release
-      </span>
-      <span className="text-lg font-semibold">
-        {movie.release_date
-          ? new Date(movie.release_date).getFullYear()
-          : "N/A"}
-      </span>
-    </div>
-
-    <div className="flex flex-col">
-      <span className="text-slate-500 dark:text-gray-500 font-bold uppercase tracking-wider mb-1">
-        Language
-      </span>
-      <span className="text-lg font-semibold">
-        {movie.original_language?.toUpperCase() || "N/A"}
-      </span>
-    </div>
-
-  </div>
-
-</div>
+                <div className="flex flex-col">
+                  <span className="text-slate-500 dark:text-gray-500 font-bold uppercase tracking-wider mb-1">
+                    Language
+                  </span>
+                  <span className="text-lg font-semibold">
+                    {movie.original_language?.toUpperCase() || "N/A"}
+                  </span>
+                </div>
+              </div>
+            </div>
 
             {/* TRAILER */}
             <div className="mt-12">

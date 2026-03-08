@@ -21,3 +21,8 @@ export const addToHistory = async (movie) => {
 
   return res.data;
 };
+
+export const getHistory = async () => {
+  const res = await axiosClient.get("/user/history");
+  return res.data;
+};

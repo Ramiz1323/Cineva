@@ -6,6 +6,7 @@ import MovieDetails from "./pages/MovieDetails";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Favorites from "./pages/Favorites";
+import History from "./pages/History";
 
 function App() {
   return (
@@ -15,22 +16,15 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/movie/:id" element={<MovieDetails />} />
         {/* Placeholder Routes */}
-        <Route
-          path="/search"
-          element={
-            <div className="pt-20 text-white">Search Results Page...</div>
-          }
-        />
+        <Route path="/search" element={<div className="pt-20 text-white">Search Results Page...</div>}/>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route
-          path="/favorites"
-          element={
-            <ProtectedRoute>
-              <Favorites />
-            </ProtectedRoute>
-          }
-        />
+
+        {/* Protected Routes */}
+        <Route path="/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>}/>
+        <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>}/>
+
+
       </Routes>
     </Router>
   );
