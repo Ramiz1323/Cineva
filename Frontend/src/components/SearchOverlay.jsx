@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { X, Search } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
+import { X, Search, Mic } from "lucide-react";
 import { useSearch } from "../hooks/useSearch";
 import { Link } from "react-router-dom";
 import SkeletonSearchRow from "./SkeletonSearchRow";
@@ -7,8 +7,50 @@ import SkeletonSearchRow from "./SkeletonSearchRow";
 const SearchOverlay = ({ open, onClose }) => {
 
   const [query, setQuery] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
 
   const { results, loading } = useSearch(query);
+
+  // Initialize Speech Recognition
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onstart = () => setIsListening(true);
+      
+      recognitionRef.current.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        // removing the trailing period that some browsers add
+        setQuery(transcript.replace(/\.$/, '')); 
+      };
+
+      recognitionRef.current.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onend = () => setIsListening(false);
+    }
+  }, []);
+
+  const handleVoiceSearch = () => {
+    if (!recognitionRef.current) {
+      alert("Your browser does not support Voice Search. Please try Google Chrome.");
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+    } else {
+      setQuery(""); // clear previous before speaking
+      recognitionRef.current.start();
+    }
+  };
 
   useEffect(() => {
     const handleEsc = (e) => {
@@ -47,15 +89,30 @@ const SearchOverlay = ({ open, onClose }) => {
       {/* Search Input */}
       <div className="w-full max-w-2xl relative">
 
-        <Search className="absolute left-4 top-3 text-gray-400" />
+        <Search className={`absolute left-4 top-3 transition-colors ${isListening ? "text-red-500 animate-pulse" : "text-gray-400"}`} />
 
         <input
           autoFocus
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search movies..."
-          className="w-full pl-12 pr-4 py-3 rounded-xl bg-zinc-900 text-white border border-zinc-700 focus:ring-2 focus:ring-red-500 outline-none"
+          placeholder={isListening ? "Listening..." : "Search movies or TV shows..."}
+          className={`w-full pl-12 pr-14 py-3 rounded-xl bg-zinc-900 text-white outline-none transition-all ${
+            isListening ? "border border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)]" : "border border-zinc-700 focus:ring-2 focus:ring-red-500"
+          }`}
         />
+
+        {/* Mic Button */}
+        <button
+          onClick={handleVoiceSearch}
+          title={isListening ? "Stop listening" : "Voice Search"}
+          className={`absolute right-3 top-2.5 p-1.5 rounded-full transition-all ${
+            isListening 
+              ? "bg-red-500 text-white animate-pulse shadow-md shadow-red-500/50" 
+              : "text-gray-400 hover:text-white hover:bg-zinc-800"
+          }`}
+        >
+          <Mic size={20} />
+        </button>
 
       </div>
 
