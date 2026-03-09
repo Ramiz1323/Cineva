@@ -126,6 +126,15 @@ const getMovieImages = async (req, res) => {
   }
 };
 
+const getMovieTrailers = async (req, res) => {
+  try {
+    const videos = await movieService.fetchMovieVideos(req.params.id);
+    res.status(200).json(videos.results || []);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch trailers" });
+  }
+};
+
 const getMovieGenres = async (req, res) => {
   try {
     const data = await movieService.fetchMovieGenres();
@@ -153,6 +162,7 @@ module.exports = {
   getMovie,
   getMovieCast,
   getMovieImages,
+  getMovieTrailers,
   searchMovies,
   getMovieGenres,
   discoverMovies,

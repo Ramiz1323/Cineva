@@ -86,6 +86,13 @@ const fetchMovieImages = async (id) => {
   return response.data;
 };
 
+const fetchMovieVideos = async (id) => {
+  const response = await axios.get(`${BASE_URL}/movie/${id}/videos`, {
+    params: { api_key: API_KEY },
+  });
+  return response.data;
+};
+
 const searchMovies = async (query, page = 1) => {
   const response = await axios.get(`${BASE_URL}/search/multi`, {
     params: {
@@ -107,6 +114,13 @@ const fetchMovieGenres = async () => {
 
 const fetchTvGenres = async () => {
   const response = await axios.get(`${BASE_URL}/genre/tv/list`, {
+    params: { api_key: API_KEY },
+  });
+  return response.data;
+};
+
+const fetchTvVideos = async (id) => {
+  const response = await axios.get(`${BASE_URL}/tv/${id}/videos`, {
     params: { api_key: API_KEY },
   });
   return response.data;
@@ -138,6 +152,8 @@ module.exports = {
   fetchMovieDetails,
   fetchMovieCast,
   fetchMovieImages,
+  fetchMovieVideos,
+  fetchTvVideos,
   searchMovies,
   fetchMovieGenres,
   fetchTvGenres,

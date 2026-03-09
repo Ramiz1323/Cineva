@@ -65,3 +65,8 @@ export const discoverMovies = async (page = 1, genreId = null, sort = 'popularit
   const res = await publicAxiosClient.get("/movie/discover", { params });
   return res.data;
 };
+
+export const getMovieTrailers = async (id) => {
+  const res = await publicAxiosClient.get(`/movie/${id}/trailers`);
+  return res.data;
+};

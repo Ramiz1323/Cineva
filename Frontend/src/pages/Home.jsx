@@ -38,9 +38,26 @@ const Home = () => {
           <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-6 tracking-tighter leading-tight drop-shadow-2xl text-white">
             Discover <span className="text-transparent bg-clip-text bg-linear-to-r from-red-500 to-orange-400 text-shadow-sm">Movies</span>
           </h1>
-          <p className="text-slate-100 dark:text-gray-300 text-base sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg">
+          <p className="text-slate-100 dark:text-gray-300 text-base sm:text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed drop-shadow-lg mb-8">
             Explore trending films, popular hits, and discover your next favorite movie in a stunning cinematic experience.
           </p>
+
+          <motion.div 
+             initial={{ opacity: 0, y: 15 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.6, duration: 0.8 }}
+             className="flex flex-wrap items-center justify-center gap-4 mt-8"
+          >
+            <span className="px-6 py-3 bg-white/10 dark:bg-black/50 backdrop-blur-xl rounded-full text-base sm:text-lg font-bold text-white border border-white/20 flex items-center gap-2 lg:gap-3 shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:bg-white/20 transition-all hover:scale-105 cursor-default">
+              🎤 <span className="tracking-wide">Voice Search</span>
+            </span>
+            <span className="px-6 py-3 bg-red-600/30 dark:bg-red-900/40 backdrop-blur-xl rounded-full text-base sm:text-lg font-bold text-red-50 border border-red-500/50 flex items-center gap-2 lg:gap-3 shadow-[0_0_30px_rgba(239,68,68,0.4)] hover:bg-red-600/40 transition-all hover:scale-105 cursor-default ring-1 ring-red-500/50">
+              🤖 <span className="tracking-wide">AI Mood Match</span>
+            </span>
+            <span className="px-6 py-3 bg-white/10 dark:bg-black/50 backdrop-blur-xl rounded-full text-base sm:text-lg font-bold text-white border border-white/20 flex items-center gap-2 lg:gap-3 shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:bg-white/20 transition-all hover:scale-105 cursor-default">
+              ▶️ <span className="tracking-wide">Trailer on Hover</span>
+            </span>
+          </motion.div>
         </motion.div>
       </div>
 

@@ -3,6 +3,7 @@ const {
   getTrendingTv,
   getPopularTv,
   getTopRatedTv,
+  getTvTrailers,
   getTvGenres,
   discoverTvShows,
 } = require("../controllers/tv.controller");
@@ -14,5 +15,6 @@ tvRouter.get("/popular", getPopularTv);
 tvRouter.get("/top-rated", getTopRatedTv);
 tvRouter.get("/genres", getTvGenres);
 tvRouter.get("/discover", discoverTvShows);
+tvRouter.get("/:id/trailers", getTvTrailers);
 
 module.exports = tvRouter;

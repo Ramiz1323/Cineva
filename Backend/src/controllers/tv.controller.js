@@ -40,6 +40,15 @@ const getTvGenres = async (req, res) => {
   }
 };
 
+const getTvTrailers = async (req, res) => {
+  try {
+    const videos = await tvService.fetchTvVideos(req.params.id);
+    res.status(200).json(videos.results || []);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch TV trailers" });
+  }
+};
+
 const discoverTvShows = async (req, res) => {
   try {
     const { page = 1, genre, sort = 'popularity.desc' } = req.query;
@@ -54,6 +63,7 @@ module.exports = {
   getTrendingTv,
   getPopularTv,
   getTopRatedTv,
+  getTvTrailers,
   getTvGenres,
   discoverTvShows,
 };

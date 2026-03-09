@@ -33,3 +33,7 @@ export const discoverTv = async (page = 1, genreId = null, sort = "popularity.de
   return res.data;
 };
 
+export const getTvTrailers = async (id) => {
+  const res = await publicAxiosClient.get(`/tv/${id}/trailers`);
+  return res.data;
+};

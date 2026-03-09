@@ -7,6 +7,7 @@ const {
   getMovie,
   getMovieCast,
   getMovieImages,
+  getMovieTrailers,
   searchMovies,
   getMovieGenres,
   discoverMovies,
@@ -24,5 +25,6 @@ movieRouter.get("/search", searchMovies);
 movieRouter.get("/:id", getMovie);
 movieRouter.get("/:id/cast", getMovieCast);
 movieRouter.get("/:id/images", getMovieImages);
+movieRouter.get("/:id/trailers", getMovieTrailers);
 
 module.exports = movieRouter;
