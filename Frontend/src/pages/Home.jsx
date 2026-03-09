@@ -61,6 +61,50 @@ const Home = () => {
         </motion.div>
       </div>
 
+      {/* JEDI GESTURES AD BANNER (PROMOTION) - SHRUNK DOWN */}
+      <section className="px-4 py-2 mx-auto w-full max-w-[1000px] -mt-6 mb-6 relative z-20">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.8 }}
+          className="bg-linear-to-r from-cyan-900/60 to-blue-900/40 border border-cyan-500/30 rounded-2xl px-6 py-4 backdrop-blur-xl shadow-[0_0_20px_rgba(6,182,212,0.1)] flex items-center justify-between gap-4 overflow-hidden relative"
+        >
+          {/* Decorative glow inside banner */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-[40px] -mr-16 -mt-16 pointer-events-none"></div>
+
+          <div className="flex-1 z-10 flex items-center gap-4">
+            <span className="shrink-0 px-2.5 py-1 bg-cyan-500/20 text-cyan-300 text-[10px] font-black uppercase tracking-wider rounded-md border border-cyan-500/50">
+              New
+            </span>
+            <div>
+               <h3 className="text-sm md:text-base font-bold text-white flex items-center gap-2">
+                 <span className="text-lg">🪄</span> Jedi Hand Gestures Mode
+               </h3>
+               <p className="text-gray-300 text-xs md:text-sm mt-0.5 line-clamp-1 md:line-clamp-2">
+                 Navigate Cineva hands-free! Turn on the Jedi Mode toggle (bottom left) and swipe your hand to scroll.
+               </p>
+            </div>
+          </div>
+
+          <div className="flex gap-3 items-center z-10 shrink-0">
+             <motion.div 
+              animate={{ x: [-3, 3, -3] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              className="text-cyan-400 text-xs font-bold uppercase hidden sm:block"
+             >
+               Try It
+             </motion.div>
+             <motion.div 
+              animate={{ rotate: [0, -10, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-10 h-10 rounded-full bg-cyan-500/20 border border-cyan-400 flex items-center justify-center text-cyan-200 shadow-[0_0_15px_rgba(6,182,212,0.3)]"
+            >
+              <span className="text-lg">👋</span>
+            </motion.div>
+          </div>
+        </motion.div>
+      </section>
+
       {/* TRENDING SECTION */}
       <section className="px-4 sm:px-8 md:px-12 lg:px-20 py-12 max-w-[1600px] mx-auto">
         <motion.div 

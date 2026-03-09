@@ -17,6 +17,7 @@ import TVShows from "./pages/TVShows";
 import AdminDashboard from "./pages/AdminDashboard";
 import Profile from "./pages/Profile";
 import MoodRecommender from "./pages/MoodRecommender";
+import JediWidget from "./components/JediWidget";
 
 function App() {
   const dispatch = useDispatch();
@@ -84,6 +85,7 @@ function App() {
           {/* Catch-all redirect to Home */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <JediWidget />
       </>
     );
   };
