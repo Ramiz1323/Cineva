@@ -16,6 +16,7 @@ import Movies from "./pages/Movies";
 import TVShows from "./pages/TVShows";
 import AdminDashboard from "./pages/AdminDashboard";
 import Profile from "./pages/Profile";
+import MoodRecommender from "./pages/MoodRecommender";
 
 function App() {
   const dispatch = useDispatch();
@@ -66,6 +67,7 @@ function App() {
           {/* Category Routes */}
           <Route path="/movies" element={<Movies />} />
           <Route path="/tv" element={<TVShows />} />
+          <Route path="/mood" element={<MoodRecommender />} />
 
           {/* Other Routes */}
           <Route path="/search" element={<div className="pt-20 text-white">Search Results Page...</div>}/>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search, Menu, X, Film, Tv, Clock, Heart, ShieldCheck, Bookmark } from "lucide-react";
+import { Search, Menu, X, Film, Tv, Clock, Heart, ShieldCheck, Bookmark, Smile } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useAuth } from "../hooks/useAuth";
 import ThemeToggle from "./ThemeToggle";
@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const NAV_LINKS = [
   { to: "/movies", label: "Movies", icon: Film },
   { to: "/tv", label: "TV Shows", icon: Tv },
+  { to: "/mood", label: "Mood Match", icon: Smile },
 ];
 
 const AUTH_LINKS = [
