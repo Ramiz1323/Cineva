@@ -2,6 +2,17 @@
 
 @variant dark (&:where(.dark, .dark *));
 
+/* Hide the main page vertical scrollbar globally */
+html, body {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE / Edge */
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;                /* Chrome / Safari */
+}
+
+
 /* Shimmer Animation for Skeletons */
 @keyframes shimmer {
   100% {
@@ -73,4 +84,27 @@
 .no-scrollbar {
   -ms-overflow-style: none;  /* IE + Edge */
   scrollbar-width: none;     /* Firefox */
+}
+
+/* Slim scrollbar for genre pill rows */
+.slim-scrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+
+.slim-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.slim-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.35);
+  border-radius: 9999px;
+}
+
+.slim-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.65);
+}
+
+.slim-scrollbar {
+  scrollbar-width: thin;          /* Firefox */
+  scrollbar-color: rgba(150,150,150,0.35) transparent;
 }

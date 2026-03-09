@@ -94,7 +94,36 @@ const searchMovies = async (query, page = 1) => {
       page
     },
   });
+  return response.data;
+};
 
+// Genre lists
+const fetchMovieGenres = async () => {
+  const response = await axios.get(`${BASE_URL}/genre/movie/list`, {
+    params: { api_key: API_KEY },
+  });
+  return response.data; // { genres: [{id, name}] }
+};
+
+const fetchTvGenres = async () => {
+  const response = await axios.get(`${BASE_URL}/genre/tv/list`, {
+    params: { api_key: API_KEY },
+  });
+  return response.data;
+};
+
+// Discover (genre filter + sort)
+const discoverMovies = async (page = 1, genreId = null, sortBy = 'popularity.desc') => {
+  const params = { api_key: API_KEY, page, sort_by: sortBy };
+  if (genreId) params.with_genres = genreId;
+  const response = await axios.get(`${BASE_URL}/discover/movie`, { params });
+  return response.data;
+};
+
+const discoverTv = async (page = 1, genreId = null, sortBy = 'popularity.desc') => {
+  const params = { api_key: API_KEY, page, sort_by: sortBy };
+  if (genreId) params.with_genres = genreId;
+  const response = await axios.get(`${BASE_URL}/discover/tv`, { params });
   return response.data;
 };
 
@@ -110,4 +139,8 @@ module.exports = {
   fetchMovieCast,
   fetchMovieImages,
   searchMovies,
+  fetchMovieGenres,
+  fetchTvGenres,
+  discoverMovies,
+  discoverTv,
 };

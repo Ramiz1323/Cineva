@@ -7,7 +7,9 @@ const {
   getMovie,
   getMovieCast,
   getMovieImages,
-  searchMovies
+  searchMovies,
+  getMovieGenres,
+  discoverMovies,
 } = require("../controllers/movie.controller");
 
 const movieRouter = express.Router();
@@ -16,6 +18,8 @@ movieRouter.get("/trending", getTrending);
 movieRouter.get("/popular", getPopular);
 movieRouter.get("/top-rated", getTopRated);
 movieRouter.get("/upcoming", getUpcoming);
+movieRouter.get("/genres", getMovieGenres);
+movieRouter.get("/discover", discoverMovies);
 movieRouter.get("/search", searchMovies);
 movieRouter.get("/:id", getMovie);
 movieRouter.get("/:id/cast", getMovieCast);

@@ -126,6 +126,25 @@ const getMovieImages = async (req, res) => {
   }
 };
 
+const getMovieGenres = async (req, res) => {
+  try {
+    const data = await movieService.fetchMovieGenres();
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch movie genres" });
+  }
+};
+
+const discoverMovies = async (req, res) => {
+  try {
+    const { page = 1, genre, sort = 'popularity.desc' } = req.query;
+    const data = await movieService.discoverMovies(page, genre || null, sort);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to discover movies" });
+  }
+};
+
 module.exports = {
   getTrending,
   getPopular,
@@ -135,4 +154,6 @@ module.exports = {
   getMovieCast,
   getMovieImages,
   searchMovies,
+  getMovieGenres,
+  discoverMovies,
 };

@@ -31,8 +31,29 @@ const getTopRatedTv = async (req, res) => {
   }
 };
 
+const getTvGenres = async (req, res) => {
+  try {
+    const data = await tvService.fetchTvGenres();
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch TV genres" });
+  }
+};
+
+const discoverTvShows = async (req, res) => {
+  try {
+    const { page = 1, genre, sort = 'popularity.desc' } = req.query;
+    const data = await tvService.discoverTv(page, genre || null, sort);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to discover TV shows" });
+  }
+};
+
 module.exports = {
   getTrendingTv,
   getPopularTv,
   getTopRatedTv,
+  getTvGenres,
+  discoverTvShows,
 };

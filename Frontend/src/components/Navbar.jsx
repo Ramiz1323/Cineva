@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Search, Menu, X, Film, Tv, Clock, Heart, ShieldCheck } from "lucide-react";
+import { Search, Menu, X, Film, Tv, Clock, Heart, ShieldCheck, Bookmark } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useAuth } from "../hooks/useAuth";
 import ThemeToggle from "./ThemeToggle";
@@ -15,6 +15,7 @@ const NAV_LINKS = [
 const AUTH_LINKS = [
   { to: "/history", label: "History", icon: Clock },
   { to: "/favorites", label: "Favorites", icon: Heart },
+  { to: "/watchlist", label: "Watchlist", icon: Bookmark },
 ];
 
 const Navbar = () => {
@@ -114,9 +115,13 @@ const Navbar = () => {
 
                 {/* Avatar + logout */}
                 <div className="hidden md:flex items-center gap-2 pl-2 ml-1 border-l border-slate-200 dark:border-zinc-800">
-                  <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white text-xs font-bold uppercase shadow">
+                  <Link
+                    to="/profile"
+                    title="View Profile"
+                    className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white text-xs font-bold uppercase shadow hover:ring-2 hover:ring-red-500 hover:ring-offset-1 transition-all"
+                  >
                     {user?.username?.[0] || "U"}
-                  </div>
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="text-xs font-medium text-slate-500 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors px-1"

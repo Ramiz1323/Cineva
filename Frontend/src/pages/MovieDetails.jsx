@@ -1,18 +1,19 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useMovieDetails } from "../hooks/useMovieDetails";
-import { toggleFavorite, addToHistory } from "../services/userService";
+import { toggleFavorite, addToHistory, toggleWatchlist } from "../services/userService";
 import { motion } from "framer-motion";
-import { Heart } from "lucide-react";
+import { Heart, Bookmark } from "lucide-react";
 import SkeletonMovieDetails from "../components/SkeletonMovieDetails";
 import { useDispatch, useSelector } from "react-redux";
-import { addHistorySuccess } from "../redux/userSlice";
+import { addHistorySuccess, toggleWatchlistSuccess, selectWatchlistIds } from "../redux/userSlice";
 import CastCarousel from "../components/CastCarousel";
 import MediaGallery from "../components/MediaGallery";
 
 const MovieDetails = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth);
+  const watchlistIds = useSelector(selectWatchlistIds);
 
   // converts any YouTube URL format into the embeddable version
   const toEmbedUrl = (url) => {
@@ -22,7 +23,6 @@ const MovieDetails = () => {
   };
   const handleFavorite = async () => {
     if (!movie) return;
-
     try {
       await toggleFavorite({
         movieId: movie.id,
@@ -31,6 +31,16 @@ const MovieDetails = () => {
       });
     } catch (error) {
       console.error("Favorite error:", error);
+    }
+  };
+
+  const handleWatchlist = async () => {
+    if (!movie) return;
+    try {
+      await toggleWatchlist({ movieId: movie.id });
+      dispatch(toggleWatchlistSuccess(movie));
+    } catch (error) {
+      console.error("Watchlist error:", error);
     }
   };
 
@@ -148,16 +158,32 @@ const MovieDetails = () => {
               <div className="flex items-center justify-between mb-4 border-b border-slate-200 dark:border-zinc-800 pb-2">
                 <h2 className="text-2xl font-bold">Movie Overview</h2>
 
-                {/* Favorite Icon */}
+                {/* Action Buttons — Favorite + Watchlist */}
                 {isAuthenticated && (
-                  <motion.button
-                    whileTap={{ scale: 0.9 }}
-                    whileHover={{ scale: 1.15 }}
-                    onClick={handleFavorite}
-                    className="p-2 rounded-full bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white transition shadow-md"
-                  >
-                    <Heart size={20} fill="currentColor" />
-                  </motion.button>
+                  <div className="flex items-center gap-2">
+                    <motion.button
+                      whileTap={{ scale: 0.9 }}
+                      whileHover={{ scale: 1.15 }}
+                      onClick={handleFavorite}
+                      title="Add to Favorites"
+                      className="p-2 rounded-full bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white transition shadow-md"
+                    >
+                      <Heart size={20} fill="currentColor" />
+                    </motion.button>
+                    <motion.button
+                      whileTap={{ scale: 0.9 }}
+                      whileHover={{ scale: 1.15 }}
+                      onClick={handleWatchlist}
+                      title={watchlistIds.has(String(movie.id)) ? "Remove from Watchlist" : "Add to Watchlist"}
+                      className={`p-2 rounded-full transition shadow-md ${
+                        watchlistIds.has(String(movie.id))
+                          ? "bg-blue-600 text-white"
+                          : "bg-blue-500/10 hover:bg-blue-600 text-blue-500 hover:text-white"
+                      }`}
+                    >
+                      <Bookmark size={20} fill={watchlistIds.has(String(movie.id)) ? "currentColor" : "none"} />
+                    </motion.button>
+                  </div>
                 )}
               </div>
 

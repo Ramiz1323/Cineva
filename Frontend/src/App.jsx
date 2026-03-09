@@ -11,9 +11,11 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Favorites from "./pages/Favorites";
 import History from "./pages/History";
+import Watchlist from "./pages/Watchlist";
 import Movies from "./pages/Movies";
 import TVShows from "./pages/TVShows";
 import AdminDashboard from "./pages/AdminDashboard";
+import Profile from "./pages/Profile";
 
 function App() {
   const dispatch = useDispatch();
@@ -45,6 +47,11 @@ function App() {
     return children;
   };
 
+  const GuestRoute = ({ children }) => {
+    if (isAuthenticated) return <Navigate to="/" />;
+    return children;
+  };
+
   const AppLayout = () => {
     const location = useLocation();
     const hideNavOn = ["/login", "/signup"];
@@ -62,13 +69,18 @@ function App() {
 
           {/* Other Routes */}
           <Route path="/search" element={<div className="pt-20 text-white">Search Results Page...</div>}/>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
+          <Route path="/signup" element={<GuestRoute><Signup /></GuestRoute>} />
 
           {/* Protected Routes */}
           <Route path="/favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>}/>
           <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>}/>
+          <Route path="/watchlist" element={<ProtectedRoute><Watchlist /></ProtectedRoute>}/>
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>}/>
           <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>}/>
+
+          {/* Catch-all redirect to Home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </>
     );

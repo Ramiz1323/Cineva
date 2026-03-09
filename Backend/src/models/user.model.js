@@ -23,6 +23,10 @@ const userSchema = new mongoose.Schema({
         type:Array,
         default:[]
     },
+    watchlist:{
+        type:Array,
+        default:[]
+    },
     watchHistory:[{
         movieId: String,
         title: String,
@@ -34,7 +38,8 @@ const userSchema = new mongoose.Schema({
         }
     }],
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
-    isBanned: { type: Boolean, default: false }
+    isBanned: { type: Boolean, default: false },
+    bio: { type: String, default: '', maxlength: 200 }
 });
 
 const userModel = mongoose.model('User', userSchema);

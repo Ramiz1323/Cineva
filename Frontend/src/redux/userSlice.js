@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, createSelector } from "@reduxjs/toolkit";
-import { getFavorites, getHistory } from "../services/userService";
+import { getFavorites, getHistory, getWatchlist } from "../services/userService";
 import { getMovieDetails } from "../services/movieService";
 
 // ─── Thunks ────────────────────────────────────────────────────────────────
@@ -24,7 +24,6 @@ export const loadHistory = createAsyncThunk(
     try {
       const data = await getHistory();
       const raw = Array.isArray(data) ? data : (data?.history || []);
-      // deduplicate
       const seen = new Set();
       return raw.filter((item) => {
         const key = String(item.movieId);
@@ -38,6 +37,20 @@ export const loadHistory = createAsyncThunk(
   }
 );
 
+export const loadWatchlist = createAsyncThunk(
+  "user/loadWatchlist",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await getWatchlist();
+      const uniqueIds = [...new Set(data.watchlist || [])];
+      const movies = await Promise.all(uniqueIds.map((id) => getMovieDetails(id)));
+      return movies;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
 // ─── Slice ─────────────────────────────────────────────────────────────────
 
 const userSlice = createSlice({
@@ -45,6 +58,7 @@ const userSlice = createSlice({
   initialState: {
     favorites: [],
     history: [],
+    watchlist: [],
     loading: false,
     error: null,
   },
@@ -59,44 +73,44 @@ const userSlice = createSlice({
       }
     },
     addHistorySuccess: (state, action) => {
-      // deduplicate & put newest first
       state.history = state.history.filter(
         (m) => String(m.movieId) !== String(action.payload.movieId)
       );
       state.history.unshift(action.payload);
     },
+    toggleWatchlistSuccess: (state, action) => {
+      const movie = action.payload;
+      const idx = state.watchlist.findIndex((m) => String(m.id) === String(movie.id));
+      if (idx !== -1) {
+        state.watchlist.splice(idx, 1);
+      } else {
+        state.watchlist.push(movie);
+      }
+    },
     clearUserData: (state) => {
       state.favorites = [];
       state.history = [];
+      state.watchlist = [];
       state.error = null;
     },
   },
   extraReducers: (builder) => {
     builder
-      // favorites
       .addCase(loadFavorites.pending, (state) => { state.loading = true; state.error = null; })
-      .addCase(loadFavorites.fulfilled, (state, action) => {
-        state.loading = false;
-        state.favorites = action.payload;
-      })
-      .addCase(loadFavorites.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // history
+      .addCase(loadFavorites.fulfilled, (state, action) => { state.loading = false; state.favorites = action.payload; })
+      .addCase(loadFavorites.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+
       .addCase(loadHistory.pending, (state) => { state.loading = true; state.error = null; })
-      .addCase(loadHistory.fulfilled, (state, action) => {
-        state.loading = false;
-        state.history = action.payload;
-      })
-      .addCase(loadHistory.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+      .addCase(loadHistory.fulfilled, (state, action) => { state.loading = false; state.history = action.payload; })
+      .addCase(loadHistory.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+
+      .addCase(loadWatchlist.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(loadWatchlist.fulfilled, (state, action) => { state.loading = false; state.watchlist = action.payload; })
+      .addCase(loadWatchlist.rejected, (state, action) => { state.loading = false; state.error = action.payload; });
   },
 });
 
-export const { toggleFavoriteSuccess, addHistorySuccess, clearUserData } = userSlice.actions;
+export const { toggleFavoriteSuccess, addHistorySuccess, toggleWatchlistSuccess, clearUserData } = userSlice.actions;
 export default userSlice.reducer;
 
 // ─── Memoized Selectors ────────────────────────────────────────────────────
@@ -105,8 +119,13 @@ const selectUserState = (state) => state.user;
 
 export const selectFavorites = createSelector(selectUserState, (u) => u.favorites);
 export const selectHistory = createSelector(selectUserState, (u) => u.history);
+export const selectWatchlist = createSelector(selectUserState, (u) => u.watchlist);
 export const selectUserLoading = createSelector(selectUserState, (u) => u.loading);
 export const selectFavoriteIds = createSelector(
   selectFavorites,
-  (favs) => new Set(favs.map((f) => String(f.movieId)))
+  (favs) => new Set(favs.map((f) => String(f.id || f.movieId)))
+);
+export const selectWatchlistIds = createSelector(
+  selectWatchlist,
+  (wl) => new Set(wl.map((m) => String(m.id || m.movieId)))
 );

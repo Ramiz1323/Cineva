@@ -62,9 +62,37 @@ const getHistory = async (req, res) => {
     }
 };
 
+const toggleWatchlist = async (req, res) => {
+    try {
+        const { movieId } = req.body;
+        const user = await userModel.findById(req.user.id);
+        const isInList = user.watchlist.some(id => String(id) === String(movieId));
+        if (isInList) {
+            user.watchlist = user.watchlist.filter(id => String(id) !== String(movieId));
+        } else {
+            user.watchlist.push(String(movieId));
+        }
+        await user.save();
+        res.status(200).json({ watchlist: user.watchlist });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating watchlist", error: error.message });
+    }
+};
+
+const getWatchlist = async (req, res) => {
+    try {
+        const user = await userModel.findById(req.user.id);
+        res.status(200).json({ watchlist: user.watchlist });
+    } catch (error) {
+        res.status(500).json({ message: "Error getting watchlist", error: error.message });
+    }
+};
+
 module.exports = {
     toggleFavorite,
     addToHistory,
     getFavorites,
-    getHistory
-}
+    getHistory,
+    toggleWatchlist,
+    getWatchlist,
+};

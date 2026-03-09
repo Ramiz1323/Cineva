@@ -20,3 +20,16 @@ export const getTopRatedTv = async (page = 1) => {
   });
   return res.data;
 };
+
+export const getTvGenres = async () => {
+  const res = await publicAxiosClient.get("/tv/genres");
+  return res.data.genres;
+};
+
+export const discoverTv = async (page = 1, genreId = null, sort = "popularity.desc") => {
+  const params = { page, sort };
+  if (genreId) params.genre = genreId;
+  const res = await publicAxiosClient.get("/tv/discover", { params });
+  return res.data;
+};
+

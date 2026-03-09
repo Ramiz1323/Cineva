@@ -52,5 +52,16 @@ export const searchMovies = async (query, page = 1) => {
     params: { q: query, page }
   });
   return res.data.results;
+};
 
+export const getMovieGenres = async () => {
+  const res = await publicAxiosClient.get("/movie/genres");
+  return res.data.genres; // [{id, name}]
+};
+
+export const discoverMovies = async (page = 1, genreId = null, sort = 'popularity.desc') => {
+  const params = { page, sort };
+  if (genreId) params.genre = genreId;
+  const res = await publicAxiosClient.get("/movie/discover", { params });
+  return res.data;
 };
