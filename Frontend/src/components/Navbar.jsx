@@ -50,8 +50,9 @@ const Navbar = () => {
           {/* Logo */}
           <Link
             to="/"
-            className="text-xl font-extrabold text-red-600 tracking-tighter shrink-0 hover:text-red-500 transition-colors"
+            className="flex items-center gap-2 text-xl font-extrabold text-red-600 tracking-tighter shrink-0 hover:text-red-500 transition-colors"
           >
+            <img src="/cineva-logo.png" alt="Cineva Logo" className="w-8 h-8 rounded-full object-cover shadow-md" />
             CINEVA
           </Link>
 
